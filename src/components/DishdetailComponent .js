@@ -1,51 +1,58 @@
 import React , {Component } from 'react';
 import {Card,CardImg, CardImgOverlay, CardText, CardBody, CardTitle,Row,Col} from 'reactstrap';
 
-
 class Detail extends Component {
     constructor(props){
         super(props);
-
-        this.state={
-           
-        }
-
     };
-
-    ondishChange(dish){
-
-    }
-
-
-    render() {
-        if(this.props.dish != null){  
-            const Comments=this.props.dish.comments.map((comment) =>{
-                return(
-                     <div>
-                        <p>{comment.comment}</p>      
-                        <p>--{comment.author} , {comment.date}</p> 
-                        <br/>
-                    </div>                     
+    renderComment(comments){
+        if(comments != null){
+            let options = { year: "numeric", month: "short", day: "numeric" };
+            var commentList = comments.map(comment => {
+                return (
+                    <li key={comment.id}>
+                        {comment.comment}
+                        <br /><br />
+                        -- {comment.author}, &nbsp;
+                        {new Date(comment.date).toLocaleDateString("en-US", options)}
+                        <br /><br />
+                    </li>
                 );
-            });        
+            });
+            return (
+                <div>
+                    <h4>Comments</h4>
+                    <ul className="list-unstyled">
+                        {commentList}
+                    </ul>
+                </div>
+            );
+        }else{
+            return ( 
+                <div>
+                    Not Selected 
+                </div>
+            )
+        }
+    };
+    renderDish(dish){
+        if(dish != null){   
             return(
-                <div className="container">
                     <div className="row">
                         <div className="coll-12 col-md-5 m-1">
                                  <Card >
-                                    <CardImg  width="100%" src={this.props.dish.image} alt={this.props.dish.name} />
+                                    <CardImg  width="100%" src={dish.image} alt={dish.name} />
                                      <CardBody>
-                                          <CardTitle>{this.props.dish.name}</CardTitle>  
-                                          <CardText>{this.props.dish.description}</CardText>  
+                                          <CardTitle>{dish.name}</CardTitle>  
+                                          <CardText>{dish.description}</CardText>  
                                      </CardBody>
                                 </Card>   
                         </div>  
                         <div className="coll-12 col-md-5 m-1">
-                            <h2>Comments of {this.props.dish.name}</h2>
-                            {Comments}                 
+                            <h2>Comments of {dish.name}</h2>
+                            {this.renderComment(dish.comments)}                 
                         </div>
                     </div>
-                </div>
             );
         }else{
             return(
@@ -57,8 +64,16 @@ class Detail extends Component {
                         </CardBody>
                     </Card>
                 </div>
-            )
+            );
         }
     };   
+    render() {
+        return(
+            <div className="container">
+                  {this.renderDish(this.props.dish)}
+            </div>
+        );
+    }
+       
 }
 export default Detail;
